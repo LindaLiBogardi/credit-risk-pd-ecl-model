@@ -24,3 +24,4 @@ def drop_excluded_columns(df: pd.DataFrame) -> pd.DataFrame:
     """Drop variables excluded up front in the expert long list."""
     building_cols = [c for c in df.columns if c.endswith(BUILDING_SUFFIXES)]
     return df.drop(columns=EXCLUDED_COLUMNS + building_cols)
+
