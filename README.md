@@ -16,3 +16,7 @@ To download the data:
 3. Run `python src/download_data.py` from the project root.
 
 Files are saved to `data/raw/`.
+
+Limitations: 
+
+1. TARGET in application_train.csv is Home Credit's own definition of payment difficulties, not the regulatory definition of default under CRR Article 178. In a bank, the target would follow the regulatory default definition.
