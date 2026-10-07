@@ -1,17 +1,15 @@
 """Expected credit loss (ECL) calculation under IFRS 9."""
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-LGD_UNSECURED = 0.45   # assumption: no recovery data available
+LGD_UNSECURED = 0.45        # assumption: no recovery data available
+SICR_PD_THRESHOLD = 0.20    # proxy: no origination PD available
 
 
 def compute_ecl(pd_: pd.Series, ead: pd.Series, lgd: float = LGD_UNSECURED) -> pd.Series:
     """12-month expected credit loss per loan: ECL = PD x LGD x EAD."""
     return pd_ * lgd * ead
-
-
-SICR_PD_THRESHOLD = 0.20   # proxy: no origination PD available
 
 
 def lifetime_pd(pd_12m: pd.Series, term_years: pd.Series) -> pd.Series:
