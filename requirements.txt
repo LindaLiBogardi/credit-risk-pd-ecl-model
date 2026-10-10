@@ -11,3 +11,4 @@ ruff==0.17.0
 pytest==9.1.1
 xgboost==3.2.0
 streamlit==1.65.0
+altair==6.3.0
