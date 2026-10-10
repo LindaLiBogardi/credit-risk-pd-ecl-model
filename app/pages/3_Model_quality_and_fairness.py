@@ -6,6 +6,7 @@ from pathlib import Path
 import altair as alt
 import pandas as pd
 import streamlit as st
+from theme import BASELINE, RISK_OVER, RISK_UNDER, show
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 
@@ -21,7 +22,8 @@ def load():
 
 def diagonal(max_value: float = 1.0) -> alt.Chart:
     line = pd.DataFrame({"x": [0, max_value], "y": [0, max_value]})
-    return alt.Chart(line).mark_line(strokeDash=[4, 4], color="grey").encode(x="x:Q", y="y:Q")
+    return alt.Chart(line).mark_line(strokeDash=[4, 4], color=BASELINE).encode(
+        x="x:Q", y="y:Q")
 
 
 st.set_page_config(page_title="Model quality and fairness", layout="wide")
@@ -29,7 +31,6 @@ st.title("Model quality and fairness")
 
 roc, calib, fairness, metrics = load()
 
-# Model quality
 st.header("Model quality (test set)")
 st.write(
     f"The scorecard reaches a test Gini of **{metrics['test_gini']:.3f}** "
@@ -41,11 +42,11 @@ left, right = st.columns(2)
 
 with left:
     st.subheader("ROC curve")
-    curve = alt.Chart(roc).mark_line().encode(
+    curve = alt.Chart(roc).mark_line(strokeWidth=2.5).encode(
         x=alt.X("fpr:Q", title="False positive rate"),
         y=alt.Y("tpr:Q", title="True positive rate"),
     )
-    st.altair_chart((curve + diagonal()).properties(height=360), use_container_width=True)
+    show((curve + diagonal()).properties(height=360))
     st.caption("The further the curve bulges above the dashed diagonal (a random model), "
                "the better the model separates defaulters from non-defaulters.")
 
@@ -54,18 +55,16 @@ with right:
     calib_pct = calib.assign(predicted=calib["predicted"] * 100,
                              observed=calib["observed"] * 100)
     upper = float(calib_pct[["predicted", "observed"]].max().max()) * 1.1
-    points = alt.Chart(calib_pct).mark_line(point=True).encode(
+    points = alt.Chart(calib_pct).mark_line(point=True, strokeWidth=2.5).encode(
         x=alt.X("predicted:Q", title="Predicted PD (%)"),
         y=alt.Y("observed:Q", title="Observed default rate (%)"),
         tooltip=["decile",
                  alt.Tooltip("predicted:Q", format=".2f"),
                  alt.Tooltip("observed:Q", format=".2f")],
     )
-    st.altair_chart((points + diagonal(upper)).properties(height=360),
-                    use_container_width=True)
+    show((points + diagonal(upper)).properties(height=360))
     st.caption("Points on the dashed line mean the predicted PD matches reality.")
 
-# Fairness
 st.header("Fairness")
 st.write(
     "Gender is not used in the model; it is joined back for testing only. The table shows "
@@ -94,16 +93,16 @@ st.dataframe(
 )
 
 st.subheader("Calibration gap by group")
-gap_chart = alt.Chart(table).mark_bar().encode(
+gap_chart = alt.Chart(table).mark_bar(cornerRadiusEnd=3).encode(
     x=alt.X("gap_pp:Q", title="Observed minus predicted (percentage points)"),
     y=alt.Y("group:N", title=None, sort=None),
-    color=alt.condition(alt.datum.gap_pp > 0, alt.value("#c0392b"), alt.value("#2e86c1")),
+    color=alt.condition(alt.datum.gap_pp > 0, alt.value(RISK_UNDER), alt.value(RISK_OVER)),
     tooltip=["attribute", "group", alt.Tooltip("gap_pp:Q", format="+.2f")],
 ).properties(height=220)
-st.altair_chart(gap_chart, use_container_width=True)
+show(gap_chart)
 st.caption(
-    "Negative bars: the model over-predicts risk for the group (scored too harshly). "
-    "Positive bars: risk is under-predicted."
+    "Slate bars: the model over-predicts risk for the group (scored too harshly). "
+    "Red bars: risk is under-predicted."
 )
 
 st.info(
@@ -113,3 +112,4 @@ st.info(
     "rules prohibit: a known trade-off between fairness definitions. The 80% rule is a "
     "screening heuristic, not an EU legal standard."
 )
+

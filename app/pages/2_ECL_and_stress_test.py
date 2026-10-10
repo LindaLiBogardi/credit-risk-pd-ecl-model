@@ -6,6 +6,7 @@ from pathlib import Path
 import altair as alt
 import pandas as pd
 import streamlit as st
+from theme import STAGE_SCALE, show
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 SCENARIO_ORDER = ["Base", "Adverse", "Severe"]
@@ -34,11 +35,9 @@ st.write(
 ecl, deciles, metrics = load()
 base_lgd = metrics["lgd"]
 
-# Controls
 with st.sidebar:
     st.header("Assumptions")
-    lgd = st.slider("Loss given default (LGD)", 0.30, 0.90, base_lgd, 0.05,
-                    format="%.2f")
+    lgd = st.slider("Loss given default (LGD)", 0.30, 0.90, base_lgd, 0.05, format="%.2f")
     w_adverse = st.slider("Weight: adverse scenario", 0.0, 1.0, 0.30, 0.05)
     w_severe = st.slider("Weight: severe scenario", 0.0, 1.0, 0.10, 0.05)
 
@@ -67,17 +66,20 @@ with left:
     chart_data = ecl.assign(Stage="Stage " + ecl["stage"].astype(str))
     chart = (
         alt.Chart(chart_data)
-        .mark_bar()
+        .mark_bar(size=48)
         .encode(
-            x=alt.X("scenario:N", sort=SCENARIO_ORDER, title=None),
-            y=alt.Y("ecl_adj:Q", title="ECL"),
-            color=alt.Color("Stage:N", legend=alt.Legend(orient="bottom")),
+            x=alt.X("scenario:N", sort=SCENARIO_ORDER, title=None,
+                    axis=alt.Axis(labelAngle=0)),
+            y=alt.Y("ecl_adj:Q", title="ECL", axis=alt.Axis(format="~s")),
+            color=alt.Color("Stage:N", scale=STAGE_SCALE,
+                            legend=alt.Legend(orient="bottom", title=None)),
+            order=alt.Order("stage:Q", sort="descending"),
             tooltip=["scenario", "Stage", "loans",
                      alt.Tooltip("ecl_adj:Q", format=",.0f", title="ECL")],
         )
         .properties(height=360)
     )
-    st.altair_chart(chart, use_container_width=True)
+    show(chart)
 
     stage2 = (
         ecl[ecl["stage"] == 2].set_index("scenario")["loans"]
@@ -94,16 +96,17 @@ with right:
     deciles["ecl_share_pct"] = deciles["ecl_share"] * 100
     chart = (
         alt.Chart(deciles)
-        .mark_bar()
+        .mark_bar(cornerRadiusEnd=3)
         .encode(
-            x=alt.X("PD_DECILE:O", title="PD decile (1 = safest)"),
+            x=alt.X("PD_DECILE:O", title="PD decile (1 = safest)",
+                    axis=alt.Axis(labelAngle=0)),
             y=alt.Y("ecl_share_pct:Q", title="Share of 12-month ECL (%)"),
             tooltip=[alt.Tooltip("PD_DECILE:O", title="Decile"),
                      alt.Tooltip("ecl_share_pct:Q", format=".1f", title="ECL share %")],
         )
         .properties(height=360)
     )
-    st.altair_chart(chart, use_container_width=True)
+    show(chart)
     st.caption("Base scenario, LGD 45%. The riskiest decile holds 8% of the exposure "
                "but 28% of the expected loss.")
 
@@ -112,3 +115,4 @@ st.info(
     "was available), LGD is a fixed assumption since the data contains no recovery "
     "information, and the SICR rule is a 20% PD proxy."
 )
+

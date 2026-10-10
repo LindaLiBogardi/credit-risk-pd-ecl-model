@@ -7,6 +7,7 @@ import altair as alt
 import numpy as np
 import pandas as pd
 import streamlit as st
+from theme import show
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 
@@ -74,8 +75,9 @@ total = int(breakdown["Points"].sum())
 pd_value = score_to_pd(total, scaling)
 
 with right:
-    st.metric("Total score", total)
-    st.metric("Probability of default (12 months)", f"{pd_value:.1%}")
+    c1, c2 = st.columns(2)
+    c1.metric("Total score", total)
+    c2.metric("Probability of default (12 months)", f"{pd_value:.1%}")
     st.caption(
         f"Scaling: {scaling['base_score']} points at good:bad odds of "
         f"{scaling['base_odds']}:1; every {scaling['pdo']} points doubles the odds."
@@ -83,7 +85,7 @@ with right:
     st.subheader("Points by variable")
     chart = (
         alt.Chart(breakdown)
-        .mark_bar()
+        .mark_bar(cornerRadiusEnd=3)
         .encode(
             x=alt.X("Points:Q", title="Points"),
             y=alt.Y("Variable:N", sort="-x", title=None,
@@ -92,4 +94,5 @@ with right:
         )
         .properties(height=380)
     )
-    st.altair_chart(chart, use_container_width=True)
+    show(chart)
+
