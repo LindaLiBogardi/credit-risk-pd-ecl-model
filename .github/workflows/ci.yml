@@ -26,3 +26,4 @@ jobs:
         run: ruff check src tests
 
       - name: Run tests
+        run: pytest
