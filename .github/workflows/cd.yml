@@ -17,11 +17,17 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
       - name: Assemble the deployment package
         run: |
           mkdir deploy
           cp -r app/. deploy/
           cp -r .streamlit deploy/
+          pip install -r app/requirements.txt --target deploy/.python_packages
 
       - name: Deploy to Azure App Service
         uses: azure/webapps-deploy@v3
