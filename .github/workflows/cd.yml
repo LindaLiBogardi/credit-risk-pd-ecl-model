@@ -1,21 +1,17 @@
-name: CD
+name: CD (Azure, manual)
 
+# The dashboard is hosted on Streamlit Community Cloud, which redeploys on
+# every push to main. This workflow is kept as a manual alternative that
+# deploys the same app to Azure App Service.
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
-    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check out the tested commit
+      - name: Check out the code
         uses: actions/checkout@v5
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
