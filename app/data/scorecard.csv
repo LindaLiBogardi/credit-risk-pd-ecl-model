@@ -1,0 +1,139 @@
+variable,bin,woe,points
+EXT_SOURCE_3,"(-inf, 0.18)",-1.1568072682523691,19
+EXT_SOURCE_3,"[0.18, 0.31)",-0.6317267391529535,31
+EXT_SOURCE_3,"[0.31, 0.41)",-0.2247960819447034,41
+EXT_SOURCE_3,"[0.41, 0.50)",0.0908542368889433,49
+EXT_SOURCE_3,"[0.50, 0.57)",0.3387304385050576,55
+EXT_SOURCE_3,"[0.57, 0.64)",0.5441716852804119,59
+EXT_SOURCE_3,"[0.64, 0.70)",0.7412442302479656,64
+EXT_SOURCE_3,"[0.70, inf)",0.9406438147919296,69
+EXT_SOURCE_3,Special,0.0,46
+EXT_SOURCE_3,Missing,-0.1601702853986819,43
+EXT_SOURCE_2,"(-inf, 0.15)",-1.1317932326661584,22
+EXT_SOURCE_2,"[0.15, 0.26)",-0.5977173249108885,33
+EXT_SOURCE_2,"[0.26, 0.39)",-0.3644325313004004,38
+EXT_SOURCE_2,"[0.39, 0.49)",-0.1165461696805754,44
+EXT_SOURCE_2,"[0.49, 0.62)",0.1337068735188262,49
+EXT_SOURCE_2,"[0.62, 0.67)",0.4070547800828961,55
+EXT_SOURCE_2,"[0.67, 0.73)",0.6956768351505986,61
+EXT_SOURCE_2,"[0.73, inf)",1.117907716022831,71
+EXT_SOURCE_2,Special,0.0,46
+EXT_SOURCE_2,Missing,-0.0439857708246202,45
+EXT_SOURCE_1,"(-inf, 0.27)",-0.7161326830030426,36
+EXT_SOURCE_1,"[0.27, 0.40)",-0.1674250087076756,44
+EXT_SOURCE_1,"[0.40, 0.53)",0.1840476325947269,49
+EXT_SOURCE_1,"[0.53, 0.62)",0.4301246068438598,53
+EXT_SOURCE_1,"[0.62, 0.70)",0.6283732347058191,56
+EXT_SOURCE_1,"[0.70, inf)",1.0612982072178951,62
+EXT_SOURCE_1,Special,0.0,46
+EXT_SOURCE_1,Missing,-0.0620839510150461,45
+DAYS_EMPLOYED,"(-inf, -5443.50)",0.6615923322025274,55
+DAYS_EMPLOYED,"[-5443.50, -3887.50)",0.3784709255161096,51
+DAYS_EMPLOYED,"[-3887.50, -3075.50)",0.2225028368751682,49
+DAYS_EMPLOYED,"[-3075.50, -2447.50)",0.128444592023007,48
+DAYS_EMPLOYED,"[-2447.50, -1785.50)",-5.119072913473133e-05,46
+DAYS_EMPLOYED,"[-1785.50, -1297.50)",-0.1350696001257638,45
+DAYS_EMPLOYED,"[-1297.50, -982.50)",-0.2640400654973995,43
+DAYS_EMPLOYED,"[-982.50, inf)",-0.3685961497569066,42
+DAYS_EMPLOYED,Special,0.0,46
+DAYS_EMPLOYED,Missing,0.4296466727328898,52
+OCCUPATION_TYPE,"<ArrowStringArray>
+['Accountants', 'IT staff', 'Managers']
+Length: 3, dtype: str",0.3808337268445636,50
+OCCUPATION_TYPE,"<ArrowStringArray>
+['High skill tech staff', 'Private service staff',              'HR staff',
+            'Core staff',           'Secretaries',        'Medicine staff',
+         'Realty agents']
+Length: 7, dtype: str",0.2227131257840007,49
+OCCUPATION_TYPE,"<ArrowStringArray>
+['Sales staff', 'Cleaning staff']
+Length: 2, dtype: str",-0.1850157478294023,45
+OCCUPATION_TYPE,"<ArrowStringArray>
+['Cooking staff', 'Laborers', 'Security staff']
+Length: 3, dtype: str",-0.2990228565958839,44
+OCCUPATION_TYPE,"<ArrowStringArray>
+['Drivers', 'Waiters/barmen staff', 'Low-skill Laborers']
+Length: 3, dtype: str",-0.4215912136717685,42
+OCCUPATION_TYPE,Special,0.0,46
+OCCUPATION_TYPE,Missing,0.2332071425928528,49
+ORGANIZATION_TYPE,"<ArrowStringArray>
+[      'Trade: type 4',       'Trade: type 5',       'Trade: type 6',
+   'Industry: type 12',            'Military',            'Religion',
+    'Industry: type 6', 'Security Ministries',              'Police',
+          'University',           'Insurance',                'Bank',
+                 'XNA',   'Transport: type 1',              'School',
+             'Culture',            'Services']
+Length: 17, dtype: str",0.4268473532260648,53
+ORGANIZATION_TYPE,"<ArrowStringArray>
+['Trade: type 2', 'Industry: type 10', 'Industry: type 9', 'Government']
+Length: 4, dtype: str",0.1811298285320606,49
+ORGANIZATION_TYPE,"<ArrowStringArray>
+['Medicine', 'Hotel', 'Emergency', 'Kindergarten']
+Length: 4, dtype: str",0.1522201082680152,49
+ORGANIZATION_TYPE,"<ArrowStringArray>
+[     'Transport: type 2',            'Electricity',       'Industry: type 7',
+                  'Other',       'Industry: type 5', 'Business Entity Type 1']
+Length: 6, dtype: str",0.0769129733429281,48
+ORGANIZATION_TYPE,"<ArrowStringArray>
+[                'Mobile',                'Housing',                 'Postal',
+                'Telecom', 'Business Entity Type 2',      'Industry: type 11',
+       'Industry: type 4']
+Length: 7, dtype: str",-0.0539136957804133,46
+ORGANIZATION_TYPE,"<ArrowStringArray>
+[      'Industry: type 2',      'Transport: type 4', 'Business Entity Type 3',
+            'Advertising',          'Trade: type 7',         'Legal Services',
+          'Trade: type 1']
+Length: 7, dtype: str",-0.1467162751314399,44
+ORGANIZATION_TYPE,"<ArrowStringArray>
+['Trade: type 3', 'Self-employed', 'Industry: type 3']
+Length: 3, dtype: str",-0.2619681686631976,42
+ORGANIZATION_TYPE,"<ArrowStringArray>
+[         'Security',       'Agriculture',           'Realtor',
+        'Restaurant',  'Industry: type 8',  'Industry: type 1',
+      'Construction',          'Cleaning', 'Industry: type 13',
+ 'Transport: type 3']
+Length: 10, dtype: str",-0.4216164274079479,40
+ORGANIZATION_TYPE,Special,0.0,46
+ORGANIZATION_TYPE,Missing,0.0,46
+NAME_EDUCATION_TYPE,"<ArrowStringArray>
+['Academic degree', 'Higher education']
+Length: 2, dtype: str",0.4346148270523771,53
+NAME_EDUCATION_TYPE,"<ArrowStringArray>
+['Incomplete higher', 'Secondary / secondary special', 'Lower secondary']
+Length: 3, dtype: str",-0.1112911413722965,45
+NAME_EDUCATION_TYPE,Special,0.0,46
+NAME_EDUCATION_TYPE,Missing,0.0,46
+REGION_RATING_CLIENT_W_CITY,"(-inf, 1.50)",0.5664240405229481,52
+REGION_RATING_CLIENT_W_CITY,"[1.50, 2.50)",0.0173990914809927,47
+REGION_RATING_CLIENT_W_CITY,"[2.50, inf)",-0.3753106107998936,43
+REGION_RATING_CLIENT_W_CITY,Special,0.0,46
+REGION_RATING_CLIENT_W_CITY,Missing,0.0,46
+AMT_GOODS_PRICE,"(-inf, 138321.00)",0.2289531427642979,50
+AMT_GOODS_PRICE,"[138321.00, 282703.50)",-0.0354305697920716,46
+AMT_GOODS_PRICE,"[282703.50, 407362.50)",-0.2813507633863907,42
+AMT_GOODS_PRICE,"[407362.50, 450117.00)",-0.5985818705200947,38
+AMT_GOODS_PRICE,"[450117.00, 677889.00)",0.0514288520844181,47
+AMT_GOODS_PRICE,"[677889.00, 902371.50)",0.2739954356651699,50
+AMT_GOODS_PRICE,"[902371.50, 1125056.25)",0.3703774425827872,52
+AMT_GOODS_PRICE,"[1125056.25, inf)",0.6199380402448078,55
+AMT_GOODS_PRICE,Special,0.0,46
+AMT_GOODS_PRICE,Missing,0.0069309820918523,46
+CREDIT_GOODS_RATIO,"(-inf, 1.10)",0.2455945508677408,50
+CREDIT_GOODS_RATIO,"[1.10, 1.13)",0.1311719299565465,48
+CREDIT_GOODS_RATIO,"[1.13, 1.16)",0.1268775142529001,48
+CREDIT_GOODS_RATIO,"[1.16, 1.21)",-0.126570459962628,44
+CREDIT_GOODS_RATIO,"[1.21, 1.32)",-0.3210088070285972,42
+CREDIT_GOODS_RATIO,"[1.32, inf)",-0.5120894135150751,39
+CREDIT_GOODS_RATIO,Special,0.0,46
+CREDIT_GOODS_RATIO,Missing,0.0069309820918523,47
+CREDIT_TERM,"(-inf, 10.78)",0.5417353376359872,57
+CREDIT_TERM,"[10.78, inf)",-0.0502515225702446,45
+CREDIT_TERM,Special,0.0,46
+CREDIT_TERM,Missing,0.0,46
+OWN_CAR_AGE,"(-inf, 3.50)",0.321155214820457,52
+OWN_CAR_AGE,"[3.50, 8.50)",0.3826759453440371,53
+OWN_CAR_AGE,"[8.50, 12.50)",0.0893341443317594,48
+OWN_CAR_AGE,"[12.50, 16.50)",-0.0674298026027182,45
+OWN_CAR_AGE,"[16.50, inf)",-0.1651345730733231,44
+OWN_CAR_AGE,Special,0.0,46
+OWN_CAR_AGE,Missing,-0.0555403528576423,45

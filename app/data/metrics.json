@@ -1,0 +1,13 @@
+{
+  "test_auc": 0.7448449911003044,
+  "test_gini": 0.4896899822006089,
+  "n_variables": 12,
+  "lgd": 0.45,
+  "scaling": {
+    "pdo": 20,
+    "base_score": 600,
+    "base_odds": 50
+  },
+  "total_ead": 184207084195.5,
+  "loans": 307511
+}
