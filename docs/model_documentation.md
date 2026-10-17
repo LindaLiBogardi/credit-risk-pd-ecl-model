@@ -1,6 +1,6 @@
 # Model documentation: PD scorecard and IFRS 9 ECL
 
-> **DRAFT for human review.** Prose drafted with the Claude API; every number is inserted by code from `docs/facts.json`. See Appendix C.
+> **Reviewed draft.** Prose drafted with the Claude API and reviewed by the model owner; every number in the generated text is inserted by code from `docs/facts.json`. See Appendix C and the review notes.
 
 | | |
 |---|---|
@@ -11,8 +11,7 @@
 
 ## Open points for the reviewer
 
-- **Fairness:** [REVIEWER: the approval cut-off or the share of applicants approved under this policy is not stated in the context.]
-- **Fairness:** [REVIEWER: whether the result for the group failing the 80% rule requires action, such as a policy review or a documented acceptance, is a governance decision not covered by the context.]
+All open points were resolved in review; see the review notes at the end.
 
 ## 1. Executive summary
 
@@ -20,7 +19,7 @@ The model is a probability of default (PD) scorecard with an IFRS 9 expected cre
 
 With an LGD of 45% and total EAD of 184.21 bn, the base-scenario ECL was 6.73 bn. The probability-weighted ECL was 8.28 bn (+23% against base), and the severe scenario gave 13.12 bn. Moving the SICR threshold from 30% to 10% changed ECL from 6.2 bn to 8.2 bn.
 
-The model over-predicts risk for women and for clients under 30. The group failing the 80% rule was Under 30, with an approval ratio of 0.67.
+The model over-predicts risk for women and for clients under 30, and clients under 30 fail the 80% rule, with an approval ratio of 0.67.
 
 The main limitations are:
 - The target is not the Article 178 default definition.
@@ -83,7 +82,7 @@ The binning, selection and modelling steps are described below. Everything learn
 
 For every variable, the expected direction of effect was compared with the direction in the binned data. The final model has 12 variables:
 
-- external credit score 1/2/3
+- external credit scores 1, 2 and 3
 - employment length
 - occupation
 - employer industry
@@ -123,7 +122,7 @@ No bank-specific PSI policy applies to this project. Under the common industry r
 
 ECL was calculated as PD x LGD x EAD on the full portfolio of 307,511 loans. The LGD was a fixed assumption of 45% and EAD was set equal to the loan amount, giving a total EAD of 184.21 bn. No recovery data or credit conversion factor was available, so both LGD and EAD are assumptions rather than estimates.
 
-**12-month ECL and staging.** Without staging, the 12-month ECL was 5.97 bn, a coverage ratio of 3.24%. A loan moved to Stage 2 when its 12-month PD exceeded the SICR threshold of 20%. Stage 2 loans received lifetime ECL based on a constant annual default rate over the remaining term. Staging raised the ECL by +12.6% relative to the unstaged figure, and Stage 2 accounted for 31% of the staged ECL. No Stage 3 was modelled, because the target is not the Article 178 default definition and the data has no time dimension.
+**12-month ECL and staging.** Without staging, the 12-month ECL was 5.97 bn, a coverage ratio of 3.24%. A loan moved to Stage 2 when its 12-month PD exceeded the SICR threshold of 20%. Stage 2 loans received lifetime ECL based on a constant annual default rate over the remaining term. Staging raised the ECL by 12.6% relative to the unstaged figure, and Stage 2 accounted for 31% of the staged ECL. No Stage 3 was modelled, because the target is not the Article 178 default definition and the data has no time dimension.
 
 **SICR sensitivity.** No origination PD was available, so the absolute PD threshold is a proxy for a significant increase in credit risk. Moving the threshold to 10% gave an ECL of 8.2 bn, and moving it to 30% gave 6.2 bn. The base-scenario ECL at the 20% threshold was 6.73 bn. The result is therefore materially sensitive to this rule. The staging uplift, the Stage 2 share of ECL and the SICR sensitivity were all calculated on the base-scenario PDs in notebook 07, before any stress shift was applied.
 
@@ -133,7 +132,7 @@ The ECL was 6.73 bn in the base scenario, 9.76 bn in the adverse scenario (+45% 
 
 **Stage migration.** The Stage 2 share of loans rose from 7.3% in the base scenario to 14.1% in the adverse scenario and 22.2% in the severe scenario. ECL therefore rose faster than PD. Most of the increase came from higher PDs and the remainder from migration to Stage 2.
 
-**LGD sensitivity.** Raising the LGD assumption from 45% to 75% increased the probability-weighted ECL by +67%. This is comparable in size to the effect of the severe scenario.
+**LGD sensitivity.** Raising the LGD assumption from 45% to 75% increased the probability-weighted ECL by 67%. This is comparable in size to the effect of the severe scenario.
 
 The scenario results follow in the table below.
 
@@ -151,15 +150,17 @@ An XGBoost model was trained on the cleaned raw features as a challenger to the 
 - interactions between variables, which a logistic regression on WoE values does not capture;
 - variables that were deliberately excluded from the scorecard, such as an undocumented document flag and counts of defaults in the client's social circle.
 
-These variables were excluded deliberately. The document flag has no documented meaning in the data dictionary, so its effect cannot be explained or monitored. The social-circle counts describe defaults by other people connected to the applicant, which raises fairness and data-provenance concerns. The gain from these variables is therefore not evidence that the scorecard is mis-specified. The scorecard was kept because of its explainability: each variable contributes a transparent number of points per bin, and every coefficient has the expected sign. The challenger used `XGBClassifier` with settings chosen by hand rather than by a search: up to 2,000 trees, a learning rate of 0.05, a maximum depth of 4, row and column subsampling of 0.8, the histogram tree method and native handling of categorical features. Training used early stopping, which stopped adding trees once the validation AUC had not improved for 100 rounds. The validation set was taken from the training data, so the held-out test set was used only for the final comparison with the scorecard (notebook 09). The validation set was 20% of the training data (stratified, seed 42), so the held-out test set was used only for the final comparison with the scorecard (notebook 09).
+These variables were excluded deliberately. The document flag has no documented meaning in the data dictionary, so its effect cannot be explained or monitored. The social-circle counts describe defaults by other people connected to the applicant, which raises fairness and data-provenance concerns. The gain from these variables is therefore not evidence that the scorecard is mis-specified. The scorecard was kept because of its explainability: each variable contributes a transparent number of points per bin, and every coefficient has the expected sign. 
 
-Aggregated credit bureau features were tested as an additional data source. 4 of them passed the IV screening. Added to the model, they raised the Gini by only 0.002-0.004. The most likely explanation is that the external credit scores already contain bureau information, so the bureau features add little that is new. This explanation was not tested directly. The gain was measured as the change in AUC, converted to Gini, both with stratified 5-fold cross-validation on the training set and on the held-out test set (notebook 11). No formal materiality criterion for adding a new data source was set. The gain exceeds the 0.001 threshold used in backward elimination, but adding a new data source was held to a higher standard than keeping an existing variable, because it adds a data dependency, data-quality monitoring and maintenance. Given the small gain and its likely overlap with the external credit scores, the bureau features were not adopted. In a bank, this decision would be made against a documented materiality threshold.
+The challenger used `XGBClassifier` with settings chosen by hand rather than by a search: up to 2,000 trees, a learning rate of 0.05, a maximum depth of 4, row and column subsampling of 0.8, the histogram tree method and native handling of categorical features. Training used early stopping, which stopped adding trees once the validation AUC had not improved for 100 rounds. The validation set was 20% of the training data (stratified, seed 42), so the held-out test set was used only for the final comparison with the scorecard (notebook 09).
+
+Aggregated credit bureau features were tested as an additional data source. Four of them passed the IV screening. Added to the model, they raised the Gini by only 0.002-0.004. The most likely explanation is that the external credit scores already contain bureau information, so the bureau features add little that is new. This explanation was not tested directly. The gain was measured as the change in AUC, converted to Gini, both with stratified 5-fold cross-validation on the training set and on the held-out test set (notebook 11). No formal materiality criterion for adding a new data source was set. The gain exceeds the 0.001 threshold used in backward elimination, but adding a new data source was held to a higher standard than keeping an existing variable, because it adds a data dependency, data-quality monitoring and maintenance. Given the small gain and its likely overlap with the external credit scores, the bureau features were not adopted. In a bank, this decision would be made against a documented materiality threshold.
 
 ## 8. Fairness
 
 Gender is excluded from the model but was joined back to the test set for fairness testing. The model variables still predict gender: a proxy model reached an AUC of 0.720, mainly through occupation and employer industry. Excluding gender therefore does not remove its information from the score. Age and gender are the only protected characteristics available, so no other attributes could be tested.
 
-Approval rates were compared under a policy that accepts the highest-scoring applicants. [REVIEWER: the approval cut-off or the share of applicants approved under this policy is not stated in the context.] The 80% rule divides each group's approval rate by that of the highest group. For gender, women had a ratio of 1.00 and men 0.90. For age, the ratios were 0.67 for under 30, 0.89 for 30-50 and 1.00 for over 50. The group failing the 80% rule was: Under 30.
+Approval rates were compared under an illustrative policy that approves the 80% of test-set applicants with the highest scores, that is, a cut-off at the 20th percentile of the score (`src/export_dashboard_data.py`). This is an assumption for testing, not an actual credit policy. The 80% rule divides each group's approval rate by that of the highest group. For gender, women had a ratio of 1.00 and men 0.90. For age, the ratios were 0.67 for under 30, 0.89 for 30-50 and 1.00 for over 50. Clients under 30 fail the 80% rule.
 
 Calibration was checked by group by comparing the mean predicted PD with the observed default rate on the test set.
 
@@ -179,7 +180,7 @@ The test has the following limits:
 - Only gender and age were available, and age was tested in bands.
 - Only approved loans are observed, so the results describe approved clients and not all applicants.
 
-[REVIEWER: whether the result for the group failing the 80% rule requires action, such as a policy review or a documented acceptance, is a governance decision not covered by the context.]
+No action was taken in this project; the result is recorded as a known limitation. In a bank, a failed 80% rule screen would be escalated to the model risk committee, which would decide whether to accept it with a documented justification, to adjust the approval policy, for example with manual review near the cut-off, or to require changes to the model. Because the PD of clients under 30 is over-predicted relative to their observed default rate, recalibration by age group would be one option to assess, subject to legal review.
 
 | Attribute | Group | Observed default | Predicted PD | Approval ratio vs highest | Passes 80% rule |
 |---|---|---|---|---|---|
@@ -197,7 +198,7 @@ The test has the following limits:
 - No Stage 3 could be modelled because the data has no time dimension and no regulatory default flag.
 - LGD is a fixed assumption of 45% and EAD is set equal to the loan amount, because the data has no recovery information and no credit conversion factor for revolving loans.
 - Scenario PDs (average targets of 11% for the adverse and 14% for the severe scenario) and the scenario weights are assumed rather than derived from a macroeconomic satellite model.
-- Only approved loans are observed, so the scorecard is subject to selection bias, which most likely explains the weak performance of the affordability ratios.
+- Only approved loans are observed, so the scorecard is subject to selection bias, which most likely explains the weak performance of the credit/income and annuity/income ratios.
 - Fairness testing was limited to gender and age, the model over-predicts risk for women and for clients under 30, and the 80% rule is a US screening heuristic rather than an EU legal standard.
 - The scorecard was kept for explainability although the XGBoost challenger reached a higher test Gini (0.531 against 0.490), so some predictive power is not captured.
 - Before use in a bank, the model would require independent validation, model risk governance and a parallel run against the existing model.
@@ -387,4 +388,6 @@ Reviewed by Linda Li Bogardi, model owner.
 - Methodology: documented the backward-elimination procedure (stratified 5-fold CV, AUC/Gini, 0.001 threshold) and the unregularised logistic regression (`penalty=None`). The selection code is in notebook 04, not notebook 03.
 - Model performance: added the conventional PSI interpretation thresholds (0.1 and 0.25), labelled as an industry rule of thumb rather than bank policy.
 - IFRS 9: confirmed that the staging and SICR sensitivity results use base-scenario PDs (no stress functions are applied in notebook 07).
-- Challenger: documented how the bureau gain was measured (5-fold CV and test set) and why the features were not adopted, since the gain exceeds the 0.001 threshold used in backward elimination.
+- Challenger: added the XGBoost settings and the early-stopping procedure (validation set taken from the training data, notebook 09); replaced a reference to undocumented reasons with the actual reasons for excluding the document flag and the social-circle variables; documented how the bureau gain was measured (5-fold CV and test set) and why the features were not adopted, since the gain exceeds the 0.001 threshold used in backward elimination.
+- Fairness: stated the approval cut-off used for the 80% rule test (top 80% by score, an illustrative assumption) and recorded the under-30 result as a known limitation, with the governance options a bank would consider.
+- Style and consistency: fixed generated phrasing, removed a duplicated sentence, narrowed the selection-bias statement in section 9 to the two affordability ratios not in the model, and checked every number against Appendix B.

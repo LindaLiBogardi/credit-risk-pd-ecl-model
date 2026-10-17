@@ -105,3 +105,5 @@ The raw data is not included in this repository, in line with Kaggle's competiti
 Work was planned as GitHub issues on a project board and delivered through feature branches and pull requests. **CI** runs ruff and pytest on every pull request. The dashboard is hosted on **Streamlit Community Cloud** and redeploys automatically from `main`. A manual **CD** workflow can also deploy it to Azure App Service, with dependencies built on the GitHub runner; the Azure free tier's CPU quota proved too small for a Streamlit app, which is why Community Cloud is the main host.
 
 In a bank, the model would also go through independent validation, model risk governance and a parallel run against the existing model before production, and deployment would use OpenID Connect rather than a publish profile.
+
+**Model documentation:** [model documentation](docs/model_documentation.md), drafted with the Claude API and reviewed by the model owner; every number is traced to its source.
