@@ -1,0 +1,344 @@
+{
+  "test_gini": {
+    "value": 0.4896899822006089,
+    "display": "0.490",
+    "source": "app/data/metrics.json"
+  },
+  "test_auc": {
+    "value": 0.7448449911003044,
+    "display": "0.745",
+    "source": "app/data/metrics.json"
+  },
+  "n_final_variables": {
+    "value": 12,
+    "display": "12",
+    "source": "app/data/metrics.json"
+  },
+  "lgd": {
+    "value": 0.45,
+    "display": "45%",
+    "source": "app/data/metrics.json"
+  },
+  "base_score": {
+    "value": 600,
+    "display": "600",
+    "source": "app/data/metrics.json"
+  },
+  "base_odds": {
+    "value": 50,
+    "display": "50:1",
+    "source": "app/data/metrics.json"
+  },
+  "pdo": {
+    "value": 20,
+    "display": "20",
+    "source": "app/data/metrics.json"
+  },
+  "total_ead": {
+    "value": 184207084195.5,
+    "display": "184.21 bn",
+    "source": "app/data/metrics.json"
+  },
+  "n_portfolio_loans": {
+    "value": 307511,
+    "display": "307,511",
+    "source": "app/data/metrics.json"
+  },
+  "sicr_threshold": {
+    "value": 0.2,
+    "display": "20%",
+    "source": "src/ecl.py"
+  },
+  "ecl_base": {
+    "value": 6728246275.650147,
+    "display": "6.73 bn",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "weight_base": {
+    "value": 0.6,
+    "display": "60%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "stage2_share_base": {
+    "value": 0.07311608365229211,
+    "display": "7.3%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "ecl_adverse": {
+    "value": 9758570009.576063,
+    "display": "9.76 bn",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "weight_adverse": {
+    "value": 0.3,
+    "display": "30%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "stage2_share_adverse": {
+    "value": 0.14106487247610655,
+    "display": "14.1%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "ecl_severe": {
+    "value": 13115092430.421894,
+    "display": "13.12 bn",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "weight_severe": {
+    "value": 0.1,
+    "display": "10%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "stage2_share_severe": {
+    "value": 0.22220668528930673,
+    "display": "22.2%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "ecl_weighted": {
+    "value": 8276028011.305097,
+    "display": "8.28 bn",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "ecl_weighted_vs_base": {
+    "value": 0.23004237244650905,
+    "display": "+23%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "ecl_adverse_vs_base": {
+    "value": 0.4503883493225873,
+    "display": "+45%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "ecl_severe_vs_base": {
+    "value": 0.9492586764973296,
+    "display": "+95%",
+    "source": "app/data/ecl_by_scenario_stage.csv"
+  },
+  "calib_max_gap_pp": {
+    "value": 0.28685134925437,
+    "display": "0.29 percentage points",
+    "source": "app/data/calibration.csv"
+  },
+  "top_decile_ecl_share": {
+    "value": 0.2833474015784341,
+    "display": "28%",
+    "source": "app/data/ecl_by_decile.csv"
+  },
+  "approval_ratio_gender_f": {
+    "value": 1.0,
+    "display": "1.00",
+    "source": "app/data/fairness.csv"
+  },
+  "observed_default_gender_f": {
+    "value": 0.0700687206128958,
+    "display": "7.01%",
+    "source": "app/data/fairness.csv"
+  },
+  "predicted_pd_gender_f": {
+    "value": 0.0746742680484214,
+    "display": "7.47%",
+    "source": "app/data/fairness.csv"
+  },
+  "approval_ratio_gender_m": {
+    "value": 0.903635111848922,
+    "display": "0.90",
+    "source": "app/data/fairness.csv"
+  },
+  "observed_default_gender_m": {
+    "value": 0.101381022083625,
+    "display": "10.14%",
+    "source": "app/data/fairness.csv"
+  },
+  "predicted_pd_gender_m": {
+    "value": 0.092400592652729,
+    "display": "9.24%",
+    "source": "app/data/fairness.csv"
+  },
+  "approval_ratio_age_group_under_30": {
+    "value": 0.6663084884626386,
+    "display": "0.67",
+    "source": "app/data/fairness.csv"
+  },
+  "observed_default_age_group_under_30": {
+    "value": 0.112913931705878,
+    "display": "11.29%",
+    "source": "app/data/fairness.csv"
+  },
+  "predicted_pd_age_group_under_30": {
+    "value": 0.1250883041821903,
+    "display": "12.51%",
+    "source": "app/data/fairness.csv"
+  },
+  "approval_ratio_age_group_30_50": {
+    "value": 0.8858753991492974,
+    "display": "0.89",
+    "source": "app/data/fairness.csv"
+  },
+  "observed_default_age_group_30_50": {
+    "value": 0.0866350153354901,
+    "display": "8.66%",
+    "source": "app/data/fairness.csv"
+  },
+  "predicted_pd_age_group_30_50": {
+    "value": 0.082010346714538,
+    "display": "8.20%",
+    "source": "app/data/fairness.csv"
+  },
+  "approval_ratio_age_group_over_50": {
+    "value": 1.0,
+    "display": "1.00",
+    "source": "app/data/fairness.csv"
+  },
+  "observed_default_age_group_over_50": {
+    "value": 0.0576694220192338,
+    "display": "5.77%",
+    "source": "app/data/fairness.csv"
+  },
+  "predicted_pd_age_group_over_50": {
+    "value": 0.0593737484257883,
+    "display": "5.94%",
+    "source": "app/data/fairness.csv"
+  },
+  "groups_failing_80_rule": {
+    "value": [
+      "Under 30"
+    ],
+    "display": "Under 30",
+    "source": "app/data/fairness.csv"
+  },
+  "n_applications": {
+    "value": 307511,
+    "display": "307,511",
+    "source": "notebooks/01_explore.ipynb"
+  },
+  "n_raw_columns": {
+    "value": 122,
+    "display": "122",
+    "source": "notebooks/01_explore.ipynb"
+  },
+  "default_rate": {
+    "value": 0.0807,
+    "display": "8.07%",
+    "source": "notebooks/01_explore.ipynb"
+  },
+  "n_long_list": {
+    "value": 23,
+    "display": "23",
+    "source": "notebooks/01_explore.ipynb"
+  },
+  "max_bins": {
+    "value": 8,
+    "display": "8",
+    "source": "notebooks/03_woe_iv.ipynb"
+  },
+  "min_bin_share": {
+    "value": 0.05,
+    "display": "5%",
+    "source": "notebooks/03_woe_iv.ipynb"
+  },
+  "iv_threshold": {
+    "value": 0.02,
+    "display": "0.02",
+    "source": "notebooks/03_woe_iv.ipynb"
+  },
+  "corr_threshold": {
+    "value": 0.6,
+    "display": "0.6",
+    "source": "notebooks/03_woe_iv.ipynb"
+  },
+  "train_gini": {
+    "value": 0.492,
+    "display": "0.492",
+    "source": "notebooks/05_validation.ipynb"
+  },
+  "psi_train_test": {
+    "value": 0.0001,
+    "display": "0.0001",
+    "source": "notebooks/05_validation.ipynb"
+  },
+  "ecl_12m_unstaged": {
+    "value": 5970000000.0,
+    "display": "5.97 bn",
+    "source": "notebooks/06_ecl.ipynb"
+  },
+  "coverage_12m": {
+    "value": 0.0324,
+    "display": "3.24%",
+    "source": "notebooks/06_ecl.ipynb"
+  },
+  "staging_uplift": {
+    "value": 0.126,
+    "display": "+12.6%",
+    "source": "notebooks/07_staging.ipynb"
+  },
+  "stage2_share_of_ecl": {
+    "value": 0.31,
+    "display": "31%",
+    "source": "notebooks/07_staging.ipynb"
+  },
+  "sicr_threshold_low": {
+    "value": 0.1,
+    "display": "10%",
+    "source": "notebooks/07_staging.ipynb"
+  },
+  "sicr_threshold_high": {
+    "value": 0.3,
+    "display": "30%",
+    "source": "notebooks/07_staging.ipynb"
+  },
+  "ecl_sicr_10pct": {
+    "value": 8200000000.0,
+    "display": "8.2 bn",
+    "source": "notebooks/07_staging.ipynb"
+  },
+  "ecl_sicr_30pct": {
+    "value": 6200000000.0,
+    "display": "6.2 bn",
+    "source": "notebooks/07_staging.ipynb"
+  },
+  "pd_target_adverse": {
+    "value": 0.11,
+    "display": "11%",
+    "source": "notebooks/08_stress_test.ipynb"
+  },
+  "pd_target_severe": {
+    "value": 0.14,
+    "display": "14%",
+    "source": "notebooks/08_stress_test.ipynb"
+  },
+  "lgd_stressed": {
+    "value": 0.75,
+    "display": "75%",
+    "source": "notebooks/08_stress_test.ipynb"
+  },
+  "lgd_75_uplift": {
+    "value": 0.67,
+    "display": "+67%",
+    "source": "notebooks/08_stress_test.ipynb"
+  },
+  "xgb_test_gini": {
+    "value": 0.531,
+    "display": "0.531",
+    "source": "notebooks/09_xgboost_challenger.ipynb"
+  },
+  "xgb_gini_gain": {
+    "value": 0.041,
+    "display": "+0.041",
+    "source": "notebooks/09_xgboost_challenger.ipynb"
+  },
+  "gender_proxy_auc": {
+    "value": 0.72,
+    "display": "0.720",
+    "source": "notebooks/10_fairness.ipynb"
+  },
+  "n_bureau_passed_iv": {
+    "value": 4,
+    "display": "4",
+    "source": "notebooks/11_bureau_features.ipynb"
+  },
+  "bureau_gini_gain": {
+    "value": "0.002-0.004",
+    "display": "0.002-0.004",
+    "source": "notebooks/11_bureau_features.ipynb"
+  }
+}
