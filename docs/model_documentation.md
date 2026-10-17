@@ -11,15 +11,6 @@
 
 ## Open points for the reviewer
 
-- **Data:** [REVIEWER: the rationale for excluding the application weekday and the building-related variables is not in the project context. Add it if it is to be documented.]
-- **Data:** [REVIEWER: treatment of other missing values, outliers and categorical level grouping is not described in the context. Add it if applicable.]
-- **Data:** [REVIEWER: the split proportions, the seed value and the resulting training and test row counts are not in the facts provided. Add them.]
-- **Methodology:** [REVIEWER: number of folds, selection metric and stopping rule are not documented.]
-- **Methodology:** [REVIEWER: regularisation, solver settings and the train/test split ratio are not documented.]
-- **Model performance:** [REVIEWER: the bank's PSI interpretation thresholds are not specified in the project context, so none were applied.]
-- **IFRS 9 expected credit loss, staging and stress testing:** [REVIEWER: confirm that the staging uplift, the Stage 2 share of ECL and the SICR sensitivity figures refer to the base scenario.]
-- **Challenger model and additional data:** [REVIEWER: XGBoost hyperparameters, tuning procedure and the number of input features are not in the provided context; add them if the validators need to reproduce the challenger.]
-- **Challenger model and additional data:** [REVIEWER: confirm the dataset on which the bureau gain was measured, and whether a formal materiality criterion for adopting additional features was set.]
 - **Fairness:** [REVIEWER: the approval cut-off or the share of applicants approved under this policy is not stated in the context.]
 - **Fairness:** [REVIEWER: whether the result for the group failing the 80% rule requires action, such as a policy review or a documented acceptance, is a governance decision not covered by the context.]
 
@@ -66,18 +57,16 @@ Before any statistical testing, an expert long list of 23 candidate risk drivers
 - The application weekday.
 - Building-related variables.
 
-[REVIEWER: the rationale for excluding the application weekday and the building-related variables is not in the project context. Add it if it is to be documented.]
+The application weekday was excluded because it has no plausible causal link to a borrower’s ability to repay. The building-related variables (characteristics of the client’s residence) were excluded because most of them are missing for a large share of applications and they duplicate each other, which would make them unstable as risk drivers.
 
 The following cleaning and feature steps were applied:
 
 - Employment length contains a placeholder value that marks clients who are not employed, almost all of them pensioners. The placeholder was replaced by a missing value and a separate flag.
 - Affordability ratios were derived: credit/income, annuity/income, credit term and credit/goods price.
 
-[REVIEWER: treatment of other missing values, outliers and categorical level grouping is not described in the context. Add it if applicable.]
+Other missing values were not imputed. Optimal binning places missing values in a separate bin with its own WoE, so missingness is treated as information. Extreme values do not distort the model, because they fall into the outer bins of each variable. For categorical variables such as occupation and employer industry, optimal binning grouped categories with similar default rates into a small number of bins (see Appendix A).
 
-The data was split into a training set and a test set. The split was stratified on the target and used a fixed seed. Everything learned from data, including the binning, the variable selection and the model coefficients, used the training set only. The test set was held out for discrimination, calibration, stability and fairness measurement.
-
-[REVIEWER: the split proportions, the seed value and the resulting training and test row counts are not in the facts provided. Add them.]
+The data was split 70/30 into a training set and a test set (`TEST_SIZE = 0.3`, `RANDOM_STATE = 42` in `src/data_split.py`), stratified on the target. The training set contains 215,257 applications and the test set 92,254. Everything learned from data, including the binning, the variable selection and the model coefficients, used the training set only. The test set was held out for discrimination, calibration, stability and fairness measurement.
 
 ## 4. Methodology
 
@@ -90,7 +79,7 @@ The binning, selection and modelling steps are described below. Everything learn
 - An IV threshold of 0.02: variables below it were dropped.
 - A WoE correlation threshold of 0.6: for variable pairs above it, only one variable was retained.
 - A business review of the bins of every variable.
-- Backward elimination with cross-validation. [REVIEWER: number of folds, selection metric and stopping rule are not documented.]
+- Backward elimination with stratified 5-fold cross-validation on the training set (`cross_val_score` with `cv=5` in notebook 04), using the cross-validated AUC (equivalently, Gini = 2·AUC − 1) as the selection metric. At each step, the variable whose removal reduced the Gini the least was dropped, as long as the reduction was below 0.001. Elimination stopped when removing any remaining variable would reduce the Gini by 0.001 or more.
 
 For every variable, the expected direction of effect was compared with the direction in the binned data. The final model has 12 variables:
 
@@ -107,7 +96,7 @@ For every variable, the expected direction of effect was compared with the direc
 
 **Selection bias.** The derived affordability ratios were weak. The credit/income and annuity/income ratios are not among the final variables. The most likely explanation is selection bias, because only approved loans are observed, so applicants with poor affordability are largely absent. This explanation was not tested, since rejected applications are not in the data.
 
-**Logistic regression.** A logistic regression was fitted on the WoE-transformed values of the final variables. All coefficients have the expected sign. [REVIEWER: regularisation, solver settings and the train/test split ratio are not documented.]
+**Logistic regression.** A logistic regression was fitted on the WoE-transformed values of the final variables. All coefficients have the expected sign. The model was fitted with scikit-learn's `LogisticRegression` without regularisation (`penalty=None`), using the default lbfgs solver with up to 1,000 iterations. Regularisation was not needed, because the WoE inputs are few, already smoothed by binning and not strongly correlated (WoE correlation below 0.6).
 
 **Score scaling.** The log-odds output was converted to points with a linear transformation. A base score of 600 corresponds to good:bad odds of 50:1, and an increase of 20 points (PDO) doubles the odds.
 
@@ -119,7 +108,7 @@ Calibration was assessed by comparing the mean predicted PD with the observed de
 
 Stability was measured with the population stability index (PSI) between the training and test score distributions. The PSI was 0.0001, which indicates virtually no shift between the two samples. Both samples come from a stratified random split of a single undated period, so this result confirms the split is consistent but says nothing about stability over time. Out-of-time validation was not possible because the data has no time dimension.
 
-[REVIEWER: the bank's PSI interpretation thresholds are not specified in the project context, so none were applied.]
+No bank-specific PSI policy applies to this project. Under the common industry rule of thumb, a PSI below 0.1 indicates no significant shift, 0.1 to 0.25 a moderate shift that should be investigated, and above 0.25 a significant shift that requires action. The observed PSI of 0.0001 is far below 0.1. In a bank, these thresholds would be set in the model monitoring policy, together with thresholds for discrimination and calibration.
 
 | Measure | Value |
 |---|---|
@@ -136,7 +125,7 @@ ECL was calculated as PD x LGD x EAD on the full portfolio of 307,511 loans. The
 
 **12-month ECL and staging.** Without staging, the 12-month ECL was 5.97 bn, a coverage ratio of 3.24%. A loan moved to Stage 2 when its 12-month PD exceeded the SICR threshold of 20%. Stage 2 loans received lifetime ECL based on a constant annual default rate over the remaining term. Staging raised the ECL by +12.6% relative to the unstaged figure, and Stage 2 accounted for 31% of the staged ECL. No Stage 3 was modelled, because the target is not the Article 178 default definition and the data has no time dimension.
 
-**SICR sensitivity.** No origination PD was available, so the absolute PD threshold is a proxy for a significant increase in credit risk. Moving the threshold to 10% gave an ECL of 8.2 bn, and moving it to 30% gave 6.2 bn. The base-scenario ECL at the 20% threshold was 6.73 bn. The result is therefore materially sensitive to this rule. [REVIEWER: confirm that the staging uplift, the Stage 2 share of ECL and the SICR sensitivity figures refer to the base scenario.]
+**SICR sensitivity.** No origination PD was available, so the absolute PD threshold is a proxy for a significant increase in credit risk. Moving the threshold to 10% gave an ECL of 8.2 bn, and moving it to 30% gave 6.2 bn. The base-scenario ECL at the 20% threshold was 6.73 bn. The result is therefore materially sensitive to this rule. The staging uplift, the Stage 2 share of ECL and the SICR sensitivity were all calculated on the base-scenario PDs in notebook 07, before any stress shift was applied.
 
 **Scenarios.** Three scenarios were used: base, adverse and severe, with assumed probability weights of 60%, 30% and 10%. Scenario PDs were produced by a log-odds shift that preserves the ranking of clients. The shift was calibrated so that the average PD reached the scenario target, 11% for the adverse scenario and 14% for the severe scenario. The targets and weights are assumptions and were not derived from a macroeconomic satellite model.
 
@@ -162,9 +151,9 @@ An XGBoost model was trained on the cleaned raw features as a challenger to the 
 - interactions between variables, which a logistic regression on WoE values does not capture;
 - variables that were deliberately excluded from the scorecard, such as an undocumented document flag and counts of defaults in the client's social circle.
 
-The exclusions were made for reasons documented earlier in the development, so the gain is not evidence that the scorecard is mis-specified. The scorecard was kept because of its explainability: each variable contributes a transparent number of points per bin, and every coefficient has the expected sign. [REVIEWER: XGBoost hyperparameters, tuning procedure and the number of input features are not in the provided context; add them if the validators need to reproduce the challenger.]
+These variables were excluded deliberately. The document flag has no documented meaning in the data dictionary, so its effect cannot be explained or monitored. The social-circle counts describe defaults by other people connected to the applicant, which raises fairness and data-provenance concerns. The gain from these variables is therefore not evidence that the scorecard is mis-specified. The scorecard was kept because of its explainability: each variable contributes a transparent number of points per bin, and every coefficient has the expected sign. The challenger used `XGBClassifier` with settings chosen by hand rather than by a search: up to 2,000 trees, a learning rate of 0.05, a maximum depth of 4, row and column subsampling of 0.8, the histogram tree method and native handling of categorical features. Training used early stopping, which stopped adding trees once the validation AUC had not improved for 100 rounds. The validation set was taken from the training data, so the held-out test set was used only for the final comparison with the scorecard (notebook 09). The validation set was 20% of the training data (stratified, seed 42), so the held-out test set was used only for the final comparison with the scorecard (notebook 09).
 
-Aggregated credit bureau features were tested as an additional data source. 4 of them passed the IV screening. Added to the model, they raised the Gini by only 0.002-0.004. The most likely explanation is that the external credit scores already contain bureau information, so the bureau features add little that is new. This explanation was not tested directly. The bureau features were not adopted, because the gain did not justify the additional data dependency and model complexity. [REVIEWER: confirm the dataset on which the bureau gain was measured, and whether a formal materiality criterion for adopting additional features was set.]
+Aggregated credit bureau features were tested as an additional data source. 4 of them passed the IV screening. Added to the model, they raised the Gini by only 0.002-0.004. The most likely explanation is that the external credit scores already contain bureau information, so the bureau features add little that is new. This explanation was not tested directly. The gain was measured as the change in AUC, converted to Gini, both with stratified 5-fold cross-validation on the training set and on the held-out test set (notebook 11). No formal materiality criterion for adding a new data source was set. The gain exceeds the 0.001 threshold used in backward elimination, but adding a new data source was held to a higher standard than keeping an existing variable, because it adds a data dependency, data-quality monitoring and maintenance. Given the small gain and its likely overlap with the external credit scores, the bureau features were not adopted. In a bank, this decision would be made against a documented materiality threshold.
 
 ## 8. Fairness
 
@@ -390,7 +379,12 @@ This document was produced by `src/model_doc/generate.py`:
    records the changes in the review notes. The raw drafts with placeholders are kept
    in `docs/model_documentation_drafts.json` for traceability.
 
-
 ## Review notes
 
-_To be completed by the model owner: what was checked, what was changed and why._
+Reviewed by Linda Li Bogardi, model owner.
+
+- Data: added the reasons for the up-front exclusions, the treatment of missing values and categorical grouping, and the split details (70/30, seed 42, row counts checked against notebook 02).
+- Methodology: documented the backward-elimination procedure (stratified 5-fold CV, AUC/Gini, 0.001 threshold) and the unregularised logistic regression (`penalty=None`). The selection code is in notebook 04, not notebook 03.
+- Model performance: added the conventional PSI interpretation thresholds (0.1 and 0.25), labelled as an industry rule of thumb rather than bank policy.
+- IFRS 9: confirmed that the staging and SICR sensitivity results use base-scenario PDs (no stress functions are applied in notebook 07).
+- Challenger: documented how the bureau gain was measured (5-fold CV and test set) and why the features were not adopted, since the gain exceeds the 0.001 threshold used in backward elimination.
